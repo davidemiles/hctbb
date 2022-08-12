@@ -36,16 +36,18 @@
           document.querySelector("#code").value =
             localStorage["code"] || "29902";
         }
-        
-      if (localStorage["cookie"] != "undefined" || !localStorage["cookie"]) {
-        document.querySelector("#user").value = localStorage["user"] || "";
-        document.querySelector("#password").value = localStorage["pass"] || "";
-        document.querySelector("#code").value = localStorage["code"] || "29902";
-        document.querySelector("#status").innerHTML =
-          "Cookie saved. Fectching data.";
-        document.querySelector("#login").disabled = true;
-        refreshMap();
-      }
+
+        if (localStorage["cookie"] != "undefined" || !localStorage["cookie"]) {
+          document.querySelector("#user").value = localStorage["user"] || "";
+          document.querySelector("#password").value =
+            localStorage["pass"] || "";
+          document.querySelector("#code").value =
+            localStorage["code"] || "29902";
+          document.querySelector("#status").innerHTML =
+            "Cookie saved. Fectching data.";
+          document.querySelector("#login").disabled = true;
+          refreshMap();
+        }
       });
 
       function refreshMap() {
@@ -78,7 +80,6 @@
           });
       }
 
-    
       function login() {
         if (
           !document.querySelector("#user").value ||
@@ -87,10 +88,10 @@
         )
           return alert("Please fill in ALL fields.");
         document.querySelector("#login").disabled = true;
-              localStorage["user"] = document.querySelector("#user").value;
-              localStorage["pass"] = document.querySelector("#password").value;
-              localStorage["code"] = document.querySelector("#code").value;
-          
+        localStorage["user"] = document.querySelector("#user").value;
+        localStorage["pass"] = document.querySelector("#password").value;
+        localStorage["code"] = document.querySelector("#code").value;
+
         fetch(
           `/cookie?user=${document.querySelector("#user").value}&pass=${
             document.querySelector("#password").value
@@ -101,10 +102,10 @@
             if (json.success) {
               document.querySelector("#status").innerHTML =
                 "Logged in. Fetching data...";
-                localStorage["cookie"] = json.cookie;
-                localStorage["name"] = json.name;
-                localStorage["person"] = json.person;
-                localStorage["time"] = json.time;
+              localStorage["cookie"] = json.cookie;
+              localStorage["name"] = json.name;
+              localStorage["person"] = json.person;
+              localStorage["time"] = json.time;
               if (!window.Started) {
                 window.Started = setInterval(refreshMap, 10000);
               }

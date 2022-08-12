@@ -1,4 +1,5 @@
 # hctbb
+
 Here Comes the Better Bus
 
 A client for [Here Comes The Bus](https://herecomesthebus.com/) by Synovia Solutions/CalAmp
@@ -8,8 +9,8 @@ Everyone is complaining about the app, how it's too slow, how it does not update
 Also, please allow it to use the location permission.
 
 ### Hosting it yourself
-it's simple
 
+it's simple
 
 ```bash
 npm install
