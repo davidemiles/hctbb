@@ -1,0 +1,26 @@
+{
+  "name": "hctbb",
+  "version": "1.0.0",
+  "description": "A better client for Here Comes The Bus (from Synovia)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.7",
+    "puppeteer": "^16.0.0"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "repository": {
+    "url": "https://github.com/davidemiles/hctbb"
+  },
+  "license": "MIT",
+  "keywords": [
+    "here comes the bus",
+    "bus",
+    "synovia"
+  ]
+}

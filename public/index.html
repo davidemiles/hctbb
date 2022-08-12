@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/holiday.css@0.9.8"
+    />
+    <script src="/dummy.js"></script>
+    <style>
+      .gmap_canvas {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        padding-top: 25px;
+        height: 0;
+      }
+      .gmap_canvas iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <meta charset="utf-8" />
+  <body>
+    <h1>Here Comes The Better Bus</h1>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (localStorage["user"]) {
+          document.querySelector("#user").value = localStorage["user"] || "";
+          document.querySelector("#password").value =
+            localStorage["pass"] || "";
+          document.querySelector("#code").value =
+            localStorage["code"] || "29902";
+        }
+        
+      if (localStorage["cookie"] != "undefined" || !localStorage["cookie"]) {
+        document.querySelector("#user").value = localStorage["user"] || "";
+        document.querySelector("#password").value = localStorage["pass"] || "";
+        document.querySelector("#code").value = localStorage["code"] || "29902";
+        document.querySelector("#status").innerHTML =
+          "Cookie saved. Fectching data.";
+        document.querySelector("#login").disabled = true;
+        refreshMap();
+      }
+      });
+
+      function refreshMap() {
+        document.querySelector("#status").innerHTML = "Updating map...";
+
+        fetch(
+          `/refresh?cookie=${localStorage["cookie"]}&name=${localStorage["name"]}&person=${localStorage["person"]}&time=${localStorage["time"]}`
+        )
+          .then((res) => res.json())
+          .then((json) => {
+            console.log(json);
+            if (json.d) {
+              eval(json.d);
+              document.querySelector("#status").innerHTML =
+                "Logged in. Fetched data. Updating in 10 seconds.";
+              document.querySelector("#login").disabled = true;
+              if (!window.Started) {
+                window.Started = setInterval(refreshMap, 10000);
+              }
+            }
+
+            if (json.Message) {
+              clearInterval(window.Started);
+              window.Started = undefined;
+              document.querySelector("#status").innerHTML =
+                "Session expired. Log in again please :)";
+              document.querySelector("#login").disabled = false;
+              //localStorage["cookie"] = undefined
+            }
+          });
+      }
+
+    
+      function login() {
+        if (
+          !document.querySelector("#user").value ||
+          !document.querySelector("#password").value ||
+          !document.querySelector("#code").value
+        )
+          return alert("Please fill in ALL fields.");
+        document.querySelector("#login").disabled = true;
+              localStorage["user"] = document.querySelector("#user").value;
+              localStorage["pass"] = document.querySelector("#password").value;
+              localStorage["code"] = document.querySelector("#code").value;
+          
+        fetch(
+          `/cookie?user=${document.querySelector("#user").value}&pass=${
+            document.querySelector("#password").value
+          }&code=${document.querySelector("#code").value}`
+        )
+          .then((res) => res.json())
+          .then((json) => {
+            if (json.success) {
+              document.querySelector("#status").innerHTML =
+                "Logged in. Fetching data...";
+                localStorage["cookie"] = json.cookie;
+                localStorage["name"] = json.name;
+                localStorage["person"] = json.person;
+                localStorage["time"] = json.time;
+              if (!window.Started) {
+                window.Started = setInterval(refreshMap, 10000);
+              }
+            }
+          });
+      }
+    </script>
+    <form>
+      <input id="user" placeholder="Email" required type="email" />
+      <input id="password" placeholder="Password" required type="password" />
+      <input
+        id="code"
+        placeholder="School Code"
+        value="29902"
+        required
+        type="number"
+      /><br />
+      <button id="login" type="button" onclick="window.login()">Log in!</button>
+    </form>
+
+    <p>
+      Status:
+      <span id="status"
+        >Not logged in. Log-in using the above form to load bus
+        infomation.</span
+      >
+    </p>
+    <p id="panel">Getting route status...</p>
+    <p id="buslocate">
+      HCTBB does not see any bus. Is the route currently active?
+    </p>
+    <div id="map">
+      <div class="mapouter">
+        <div class="gmap_canvas">
+          <iframe
+            src="https://maps.google.com/maps?q=United+States&t=k&z=3&ie=UTF8&iwloc=&output=embed"
+            frameborder="0"
+            style="border: 0"
+            allowfullscreen=""
+            aria-hidden="false"
+            tabindex="0"
+          ></iframe
+          ><br />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
