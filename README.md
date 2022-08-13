@@ -17,4 +17,4 @@ npm install
 PORT=80 node index.js
 ```
 
-[Public Instance](https://hctb.glitch.me/)
+[Public Instance](https://hctbb.us)
