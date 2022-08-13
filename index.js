@@ -74,12 +74,14 @@ app.get("/cookie", async function (req, res) {
     `input[name="ctl00$ctl00$cphWrapper$cphContent$tbxAccountNumber"]`,
     req.query.code
   );
-  await page.click(
-    'input[name="ctl00$ctl00$cphWrapper$cphContent$btnAuthenticate"]'
-  );
+  await Promise.all([
+    page.click(
+      'input[name="ctl00$ctl00$cphWrapper$cphContent$btnAuthenticate"]'
+    ),
+    page.waitForNavigation({waitUntil: 'networkidle2'})
+]);
   console.log("[Info] Logging in to Here Comes The Bus");
-
-  setTimeout(async function () {
+ 
     const cookies = await page.cookies();
     const value = await page.$$eval('option[selected="selected"]', (el) => {
       return { name: el[1].innerHTML, person: el[1].value, time: el[2].value };
@@ -97,7 +99,7 @@ app.get("/cookie", async function (req, res) {
 
     await browser.close();
     console.log("[Info] Browser instance closed");
-  }, 5000);
+ 
 });
 
 process.on("uncaughtException", function (err) {
