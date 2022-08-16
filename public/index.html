@@ -30,6 +30,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/holiday.css@0.9.8"
     />
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
     <script src="/dummy.js"></script>
     <style>
       .gmap_canvas {
@@ -50,6 +51,7 @@
   </head>
   <meta charset="utf-8" />
   <body>
+    <canvas id="confetti"></canvas>
     <h1>Here Comes The Better Bus</h1>
     <script>
          window.addEventListener('load', async () => {
@@ -64,6 +66,12 @@
         }
       }
     });
+    window.addEventListener('appinstalled', () => {
+      var confettiSettings = { target: 'confetti' };
+var confetti = new ConfettiGenerator(confettiSettings);
+confetti.render();
+  console.log('PWA was installed');
+});
       document.addEventListener("DOMContentLoaded", function () {
         if (localStorage["user"]) {
           document.querySelector("#user").value = localStorage["user"] || "";
@@ -85,7 +93,15 @@
           refreshMap();
         }
       });
-
+   document.getElementById('installAppBtn').addEventListener('click', async () => {
+    if (deferredPrompt !== null) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            deferredPrompt = null;
+        }
+    }
+});
       function refreshMap() {
         document.querySelector("#status").innerHTML = "Updating map...";
 
@@ -188,6 +204,7 @@
       </div>
     </div>
     <footer>
+      <button id="installAppBtn">Install HCTBB to phone</button>
       <p>Here Comes The Better Bus is <a href="https://github.com/davidemiles/hctbb">open source (MIT)</a> and street data is provided by <a href="https://openstreetmap.org">OpenStreetMap contributors</a> under the ODbL 1.0.</p>
     </footer>
   </body>
