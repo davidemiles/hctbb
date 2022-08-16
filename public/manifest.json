@@ -1,0 +1,17 @@
+{
+    "name":"Here Comes The Better Bus",
+    "short_name":"HCTBB",
+    "start_url":"/",
+    "display":"standalone",
+    "background_color":"#FDFD96",
+    "theme_color":"yellow",
+    "scope": ".",
+    "description":"Here Comes The Better Bus is an improved client for HCTB by Synovia. Made with love in Atlanta.",
+    "icons":[
+    {
+    "src":"school-bus.png",                     
+    "sizes":"512x512",
+    "type":"image/png"
+    }
+  ]
+}

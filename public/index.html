@@ -68,7 +68,7 @@
         document.querySelector("#status").innerHTML = "Updating map...";
 
         fetch(
-          `/refresh?cookie=${localStorage["cookie"]}&name=${localStorage["name"]}&person=${localStorage["person"]}&time=${localStorage["time"]}`
+          `/refresh?cookie=${localStorage["cookie"]}&name=${localStorage["name"]}&person=${localStorage["person"]}&time=${localStorage["time"]}&cache=${Math.random()}`
         )
           .then((res) => res.json())
           .then((json) => {
@@ -108,7 +108,7 @@
         fetch(
           `/cookie?user=${document.querySelector("#user").value}&pass=${
             document.querySelector("#password").value
-          }&code=${document.querySelector("#code").value}`
+          }&code=${document.querySelector("#code").value}&cache=${Math.random()}`
         )
           .then((res) => res.json())
           .then((json) => {
