@@ -25,148 +25,30 @@
 <meta name="theme-color"
       content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+    integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+    crossorigin=""></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/holiday.css@0.9.8"
     />
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
     <script src="/dummy.js"></script>
-    <style>
-      .gmap_canvas {
-        position: relative;
-        padding-bottom: 56.25%; /* 16:9 */
-        padding-top: 25px;
-        height: 0;
-      }
-      .gmap_canvas iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    </style>
 
+<style>
+  #map { height: 180px; }
+
+</style>
   </head>
   <meta charset="utf-8" />
   <body>
-    <canvas id="confetti"></canvas>
     <h1>Here Comes The Better Bus</h1>
-    <script>
-         window.addEventListener('load', async () => {
-          if ('serviceWorker' in navigator) {
-        try {
-          await navigator
-                .serviceWorker
-                .register('sw.js');
-        }
-        catch (e) {
-          console.log('Sevice Worker registration failed...');
-        }
-      }
-    });
-    window.addEventListener('appinstalled', () => {
-      var confettiSettings = { target: 'confetti' };
-var confetti = new ConfettiGenerator(confettiSettings);
-confetti.render();
-  console.log('PWA was installed');
-});
-      document.addEventListener("DOMContentLoaded", function () {
-        if (localStorage["user"]) {
-          document.querySelector("#user").value = localStorage["user"] || "";
-          document.querySelector("#password").value =
-            localStorage["pass"] || "";
-          document.querySelector("#code").value =
-            localStorage["code"] || "29902";
-        }
-
-        if (localStorage["cookie"] != "undefined" || !localStorage["cookie"]) {
-          document.querySelector("#user").value = localStorage["user"] || "";
-          document.querySelector("#password").value =
-            localStorage["pass"] || "";
-          document.querySelector("#code").value =
-            localStorage["code"] || "29902";
-          document.querySelector("#status").innerHTML =
-            "Cookie saved. Fectching data.";
-          document.querySelector("#login").disabled = true;
-          refreshMap();
-        }
-      });
-   document.getElementById('installAppBtn').addEventListener('click', async () => {
-    if (deferredPrompt !== null) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            deferredPrompt = null;
-        }
-    }
-});
-      function refreshMap() {
-        document.querySelector("#status").innerHTML = "Updating map...";
-
-        fetch(
-          `/refresh?cookie=${localStorage["cookie"]}&name=${localStorage["name"]}&person=${localStorage["person"]}&time=${localStorage["time"]}&cache=${Math.random()}`
-        )
-          .then((res) => res.json())
-          .then((json) => {
-            console.log(json);
-            if (json.d) {
-              eval(json.d);
-              document.querySelector("#status").innerHTML =
-                "Logged in. Fetched data. Updating in 10 seconds.";
-              document.querySelector("#login").disabled = true;
-              if (!window.Started) {
-                window.Started = setInterval(refreshMap, 10000);
-              }
-            }
-
-            if (json.Message) {
-              clearInterval(window.Started);
-              window.Started = undefined;
-              document.querySelector("#status").innerHTML =
-                "Session expired. Log in again please :)";
-              document.querySelector("#login").disabled = false;
-            }
-          });
-      }
-
-      function login() {
-        if (
-          !document.querySelector("#user").value ||
-          !document.querySelector("#password").value ||
-          !document.querySelector("#code").value
-        )
-          return alert("Please fill in ALL fields.");
-        document.querySelector("#login").disabled = true;
-        localStorage["user"] = document.querySelector("#user").value;
-        localStorage["pass"] = document.querySelector("#password").value;
-        localStorage["code"] = document.querySelector("#code").value;
-
-        fetch(
-          `/cookie?user=${document.querySelector("#user").value}&pass=${
-            document.querySelector("#password").value
-          }&code=${document.querySelector("#code").value}&cache=${Math.random()}`
-        )
-          .then((res) => res.json())
-          .then((json) => {
-            if (json.success) {
-              document.querySelector("#status").innerHTML =
-                "Logged in. Fetching data...";
-              localStorage["cookie"] = json.cookie;
-              localStorage["name"] = json.name;
-              localStorage["person"] = json.person;
-              localStorage["time"] = json.time;
-              if (!window.Started) {
-                window.Started = setInterval(refreshMap, 10000);
-              }
-            }
-          });
-      }
-    </script>
+   
     <form>
-      <input id="user" placeholder="Email" required type="email" />
-      <input id="password" placeholder="Password" required type="password" />
+      <input id="user" placeholder="Email" required type="email" /><br>
+      <input id="password" placeholder="Password" required type="password" /><br>
       <input
         id="code"
         placeholder="School Code"
@@ -188,24 +70,12 @@ confetti.render();
     <p id="buslocate">
       HCTBB does not see any bus. Is the route currently active?
     </p>
-    <div id="map">
-      <div class="mapouter">
-        <div class="gmap_canvas">
-          <iframe
-            src="https://maps.google.com/maps?q=United+States&t=k&z=3&ie=UTF8&iwloc=&output=embed"
-            frameborder="0"
-            style="border: 0"
-            allowfullscreen=""
-            aria-hidden="false"
-            tabindex="0"
-          ></iframe
-          ><br />
-        </div>
-      </div>
-    </div>
+    <div id="map"></div>
+
     <footer>
       <button id="installAppBtn">Install HCTBB to phone</button>
       <p>Here Comes The Better Bus is <a href="https://github.com/davidemiles/hctbb">open source (MIT)</a> and street data is provided by <a href="https://openstreetmap.org">OpenStreetMap contributors</a> under the ODbL 1.0.</p>
+      <script src="/map.js"></script>
     </footer>
   </body>
 </html>

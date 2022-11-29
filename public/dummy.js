@@ -52,12 +52,19 @@ var UpdateControlPanel = function (...a) {
 var ZoomToBusStop = function () {
   return null;
 };
+
 var SetBusPushPin = function (a, b) {
   window.BusStopData = `${a}, ${b}`;
-  document.querySelector(
-    "#map"
-  ).innerHTML = `<div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=${window.BusStopData}&t=k&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><br><style>.mapouter{position:relative;text-align:right;height:500px;width:600px;}</style><style>.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:600px;}</style></div></div>`;
+  window.map = map.setView([a,b], 15);
 
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  
+  L.marker([a,b]).addTo(map)
+      .bindPopup('Your bus is here')
+      .openPopup();
+ 
   if (navigator.geolocation) {
     fetch(`/nominatim?lat=${a}&lon=${b}`)
       .then((res) => res.json())
